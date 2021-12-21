@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 
-import '../apis/request_hacker_news.dart';
+import '../resources/request_hacker_news.dart';
 import '../models/hacker_news.dart';
 
 class HomePage extends StatelessWidget {
@@ -10,6 +10,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hackerNewsApi = HackerNewsApi();
     PreferredSize _getAppBar() {
       return PreferredSize(
         preferredSize: const Size.fromHeight(120),
@@ -147,7 +148,7 @@ class HomePage extends StatelessWidget {
               child: Text("No data"),
             );
           },
-          future: requestHackerNewsModels(),
+          future: hackerNewsApi.requestHackerNewsModels(),
         ),
       ),
     );
