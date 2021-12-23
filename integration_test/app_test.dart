@@ -23,7 +23,13 @@ void main() {
 
           await tester.pump();
 
-          expect(find.text('flight'), findsOneWidget);
+          expect(
+            find.widgetWithText(
+              Flexible,
+              'Stealth bomber in flight on Google Maps',
+            ),
+            findsOneWidget,
+          );
         },
       );
     },
