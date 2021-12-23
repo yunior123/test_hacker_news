@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:test_hacker_news/providers/hacker_news_provider.dart';
 
 import '../resources/request_hacker_news.dart';
 import '../models/hacker_news.dart';
@@ -71,85 +73,103 @@ class HomePage extends StatelessWidget {
       );
     }
 
-    return Scaffold(
-      endDrawer: const Drawer(),
-      appBar: _getAppBar(),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: FutureBuilder<List<HackerNewsModel>?>(
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const SpinKitChasingDots(
-                color: Colors.blue,
-              );
-            }
-            final items = snapshot.data;
+    return ChangeNotifierProvider<HackerNewsProvider>(
+      create: (context) => HackerNewsProvider(),
+      builder: (context, _) {
+        return Scaffold(
+          endDrawer: const Drawer(),
+          appBar: _getAppBar(),
+          body: Center(
+            // Center is a layout widget. It takes a single child and positions it
+            // in the middle of the parent.
+            child: FutureBuilder<List<HackerNewsModel>?>(
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const SpinKitChasingDots(
+                    color: Colors.blue,
+                  );
+                }
+                final items = snapshot.data;
 
-            if (items != null && items.isNotEmpty) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-                    final formatter = DateFormat.yMEd();
-                    final time = formatter.format(item.datetime);
-                    return Card(
-                      elevation: 4,
-                      child: Padding(
+                if (items != null && items.isNotEmpty) {
+                  final hackerNewsProvider = Provider.of<HackerNewsProvider>(
+                    context,
+                    listen: false,
+                  );
+                  hackerNewsProvider.setHackerNews = items;
+                  return _HackerNewsList();
+                }
+                return const Center(
+                  child: Text("No data"),
+                );
+              },
+              future: hackerNewsApi.requestHackerNewsModels(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _HackerNewsList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final hackerNewsProvider = Provider.of<HackerNewsProvider>(context);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+        itemCount: hackerNewsProvider.filteredHackerNews.length,
+        itemBuilder: (context, index) {
+          final item = hackerNewsProvider.filteredHackerNews[index];
+          final formatter = DateFormat.yMEd();
+          final time = formatter.format(item.datetime);
+          return Card(
+            elevation: 4,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: Text(item.title),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Flexible(
+                    child: Text(item.text),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Flexible(
-                              child: Text(item.title),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Flexible(
-                              child: Text(item.text),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Score: ${item.score}',
-                                    style: TextStyle(
-                                      color: Theme.of(context).errorColor,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      time,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                        child: Text(
+                          'Score: ${item.score}',
+                          style: TextStyle(
+                            color: Theme.of(context).errorColor,
+                          ),
                         ),
                       ),
-                    );
-                  },
-                ),
-              );
-            }
-            return const Center(
-              child: Text("No data"),
-            );
-          },
-          future: hackerNewsApi.requestHackerNewsModels(),
-        ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            time,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

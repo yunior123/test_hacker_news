@@ -15,13 +15,13 @@ void main() {
         (WidgetTester tester) async {
           app.main();
           await tester.pumpAndSettle();
-
+          // Verify that our counter starts at 0.
           final textField = find.byType(TextField);
           expect(textField, findsOneWidget);
 
           await tester.enterText(textField, 'developer'); //TODO
 
-          await tester.pumpAndSettle();
+          await tester.pump();
 
           expect(find.text('HN'), findsOneWidget);
         },

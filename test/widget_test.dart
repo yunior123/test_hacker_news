@@ -12,19 +12,6 @@ import 'package:test_hacker_news/main.dart';
 void main() {
   testWidgets(
     'Counter increments smoke test',
-    (WidgetTester tester) async {
-      // Build our app and trigger a frame.
-      // await tester.pumpWidget(const HackerNewsApp());
-
-      // // Verify that our counter starts at 0.
-      // final textField = find.byType(TextField);
-      // expect(textField, findsOneWidget);
-
-      // await tester.enterText(textField, 'developer'); //TODO
-
-      // await tester.pump();
-
-      // expect(find.text('HN'), findsOneWidget);
-    },
+    (WidgetTester tester) async {},
   );
 }
