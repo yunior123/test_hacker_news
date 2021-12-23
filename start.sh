@@ -1,2 +1,2 @@
 flutter test
-# flutter test integration_test
+flutter test integration_test

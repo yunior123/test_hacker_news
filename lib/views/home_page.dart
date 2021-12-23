@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hackerNewsApi = HackerNewsApi();
-    PreferredSize _getAppBar() {
+    PreferredSize _getAppBar(BuildContext ctx) {
       return PreferredSize(
         preferredSize: const Size.fromHeight(120),
         child: Stack(
@@ -47,8 +47,13 @@ class HomePage extends StatelessWidget {
                   color: Colors.green[800]!,
                 ),
                 primary: false,
-                title: const TextField(
-                  decoration: InputDecoration(
+                title: TextField(
+                  onChanged: (value) {
+                    ctx.read<HackerNewsProvider>().onFiltered(
+                          value,
+                        );
+                  },
+                  decoration: const InputDecoration(
                     hintText: "Search",
                     border: InputBorder.none,
                     hintStyle: TextStyle(
@@ -78,7 +83,7 @@ class HomePage extends StatelessWidget {
       builder: (context, _) {
         return Scaffold(
           endDrawer: const Drawer(),
-          appBar: _getAppBar(),
+          appBar: _getAppBar(context),
           body: Center(
             // Center is a layout widget. It takes a single child and positions it
             // in the middle of the parent.

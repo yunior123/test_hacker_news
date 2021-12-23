@@ -19,11 +19,11 @@ void main() {
           final textField = find.byType(TextField);
           expect(textField, findsOneWidget);
 
-          await tester.enterText(textField, 'developer'); //TODO
+          await tester.enterText(textField, 'fligh');
 
           await tester.pump();
 
-          expect(find.text('HN'), findsOneWidget);
+          expect(find.text('flight'), findsOneWidget);
         },
       );
     },

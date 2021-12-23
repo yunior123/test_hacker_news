@@ -10,11 +10,13 @@ class HackerNewsProvider with ChangeNotifier {
     filteredHackerNews = hackerNews;
   }
 
-  void onFiltered(String? title) {
-    if (title != null && title.isNotEmpty) {
+  void onFiltered(String? string) {
+    if (string != null && string.isNotEmpty) {
       filteredHackerNews = hackerNews
           .where(
-            (e) => e.title.toLowerCase().trim() == title.toLowerCase().trim(),
+            (e) => e.title.toLowerCase().trim().contains(
+                  string.toLowerCase().trim(),
+                ),
           )
           .toList();
     } else {
